@@ -1,12 +1,13 @@
-from pydantic import BaseModel
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel
 
 
 class UsersResponse(BaseModel):
     id: UUID
     first_name: str
-    Last_name: str
+    last_name: str
     username: str
     email: str
     password: str
@@ -18,7 +19,7 @@ class UsersResponse(BaseModel):
 
 class UsersRequest(BaseModel):
     first_name: str
-    Last_name: str
+    last_name: str
     username: str
     email: str
     password: str
