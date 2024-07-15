@@ -345,7 +345,7 @@ ADD
 CREATE Table "users" (
     "id" UUID PRIMARY KEY,
     "first_name" TEXT,
-    "Last_name" TEXT,
+    "last_name" TEXT,
     "username" TEXT,
     "email" TEXT UNIQUE,
     "password" TEXT,

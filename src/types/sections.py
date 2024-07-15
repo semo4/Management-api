@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
-from uuid import UUID
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, Field
 
 
 class SectionsResponse(BaseModel):
@@ -12,5 +13,7 @@ class SectionsResponse(BaseModel):
 
 
 class SectionsRequest(BaseModel):
-    name: str = Field(pattern=r'[A-Za-z]{5,50}',
-                      description='Name must be all character at least with length of 5')
+    name: str = Field(
+        pattern=r"[A-Za-z]{5,50}",
+        description="Name must be all character at least with length of 5",
+    )

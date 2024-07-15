@@ -1,6 +1,6 @@
-from dotenv import load_dotenv
 import os
 
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -18,4 +18,7 @@ def get_database_url():
     Returns:
         string: Database Url to open connection with it
     """
-    return f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+
+# todo create multiple database connections

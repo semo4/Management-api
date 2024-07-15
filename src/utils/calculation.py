@@ -1,32 +1,30 @@
-
-from src.database.connection import execute_one, execute_all
-from src.models.workers import workers
-from src.models.operations import operations
-from src.models.salaries import salaries
+from src.database.connection import execute_all, execute_one
 from src.models.bills import bills
-from src.models.outcomes import outcomes
 from src.models.incomes import incomes
+from src.models.operations import operations
+from src.models.outcomes import outcomes
+from src.models.salaries import salaries
+from src.models.workers import workers
 
 
 def calculation_contractors(data):
-    if 'amount' in data.keys() and 'paid_amount' in data.keys():
-        data['rest_amount'] = float(
-            data['amount']) - float(data['paid_amount'])
-        data['paid_amount'] += data['paid_amount']
-    elif 'amount' in data.keys():
-        data['rest_amount'] = float(data['amount'])
+    if "amount" in data.keys() and "paid_amount" in data.keys():
+        data["rest_amount"] = float(data["amount"]) - float(data["paid_amount"])
+        data["paid_amount"] += data["paid_amount"]
+    elif "amount" in data.keys():
+        data["rest_amount"] = float(data["amount"])
     return data
 
 
 def calculation_operations(data):
-    if 'worker_id' in data.keys() and 'working_hours' in data.keys():
-        res = workers.select().where(workers.c.id == data['worker_id'])
+    if "worker_id" in data.keys() and "working_hours" in data.keys():
+        res = workers.select().where(workers.c.id == data["worker_id"])
         result = execute_one(res)
         if not result:
-            data['payment_amount'] = 0
+            data["payment_amount"] = 0
             return data
         hourly_payment = result[3] / 8
-        data['payment_amount'] = hourly_payment * data['working_hours']
+        data["payment_amount"] = hourly_payment * data["working_hours"]
     return data
 
 
@@ -92,8 +90,7 @@ def calculate_project_incomes(project_id):
 
 
 def calculate_project_operations(project_id):
-    res_operations = operations.select().where(
-        operations.c.project_id == project_id)
+    res_operations = operations.select().where(operations.c.project_id == project_id)
     result_operations = execute_all(res_operations)
     total_expenses = 0
     if not result_operations:
