@@ -19,3 +19,6 @@ def get_database_url():
         string: Database Url to open connection with it
     """
     return f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+
+# todo create multiple database connections
