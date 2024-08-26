@@ -16,12 +16,12 @@ class SectionsQueries:
         row = execute_one(result)
         return row
 
-    def get_section_by_name(section_name: str):
+    def get_section_by_name(self, section_name: str):
         result = sections.select().where(sections.c.name == section_name)
         row = execute_one(result)
         return row
 
-    def insert_section(section: SectionsRequest):
+    def insert_section(self, section: SectionsRequest):
         result = sections.insert().values(dict(section)).returning(ALL_COLUMNS)
         row = execute_one(result)
         return row
@@ -31,14 +31,14 @@ class SectionsQueries:
         row = execute_one(result)
         return row
 
-    def delete_section(section_id: UUID):
+    def delete_section(self, section_id: UUID):
         result = (
             sections.delete().where(sections.c.id == section_id).returning(ALL_COLUMNS)
         )
         row = execute_one(result)
         return row
 
-    def update_section(section_id: UUID, section: SectionsRequest):
+    def update_section(self, section_id: UUID, section: SectionsRequest):
         result = (
             sections.update()
             .where(sections.c.id == section_id)

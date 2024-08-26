@@ -23,8 +23,8 @@ class ProjectsServices:
             )
         for row in result:
             data = build_projects_dict(row)
-            projects_list.append(data)
-        content = jsonable_encoder(ProjectsResponse(**dict(i)) for i in projects_list)
+            projects_list.append(ProjectsResponse(**dict(data)))
+        content = jsonable_encoder(projects_list)
         return content
 
     def get_project(self, project_id: UUID) -> jsonable_encoder:
@@ -105,7 +105,9 @@ class ProjectsServices:
                 content = jsonable_encoder(ProjectsResponse(**dict(data)))
                 return content
 
-    def update(self, project_id: UUID, projects_req: ProjectsRequest) -> jsonable_encoder:
+    def update(
+        self, project_id: UUID, projects_req: ProjectsRequest
+    ) -> jsonable_encoder:
         row = projects_queries.get_project_by_id(project_id=project_id)
         if not row:
             raise HTTPException(

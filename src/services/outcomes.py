@@ -22,8 +22,8 @@ class OutcomesServices:
             )
         for row in result:
             data = build_outcomes_dict(row)
-            outcomes_list.append(data)
-        content = jsonable_encoder(OutcomesResponse(**dict(i)) for i in outcomes_list)
+            outcomes_list.append(OutcomesResponse(**dict(data)))
+        content = jsonable_encoder(outcomes_list)
         return content
 
     def get_outcome(self, outcome_id: UUID) -> jsonable_encoder:

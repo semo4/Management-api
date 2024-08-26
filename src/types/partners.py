@@ -18,9 +18,9 @@ class PartnersResponse(BaseModel):
 
 class PartnersRequest(BaseModel):
     name: Optional[str] = Field(
-        pattern=r"[A-Za-z]{5,50}",
+        pattern=r"[A-Za-z]{3,50}",
         description="Name must be all character at least with length of 5",
     )
-    section_id: Optional[UUID] = ""
+    section_id: Optional[UUID]
     amount: Optional[float] = 0
     pre_amount: Optional[float] = 0

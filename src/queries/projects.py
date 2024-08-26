@@ -16,7 +16,10 @@ class ProjectsQueries:
     def get_projects(self):
         join_table = projects.join(sections, projects.c.section_id == sections.c.id)
         res = (
-            select(projects, sections.c.name)
+            select(
+                projects,
+                sections.c.name,
+            )
             .select_from(join_table)
             .where(projects.c.section_id == sections.c.id)
         )

@@ -6,7 +6,7 @@ from src.types.users import TokenData
 
 SECRET_KEY = "2da54c135bbdffbd3c8c70d0927be3d52a0e603eb91594a40ad54205dca8456w"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 90
 
 
 def create_token(data: dict):

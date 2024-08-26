@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 class ProjectsResponse(BaseModel):
     id: UUID
     name: str
-    section_id: Optional[UUID | None]
+    section_id: Optional[UUID | None] = ""
     section_name: Optional[str | None] = ""
     place: str
     description: str

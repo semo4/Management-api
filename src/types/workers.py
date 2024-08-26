@@ -20,11 +20,11 @@ class WorkersResponse(BaseModel):
 
 class WorkersRequest(BaseModel):
     name: Optional[str] = Field(
-        pattern=r"[A-Za-z]{5,50}",
+        pattern=r"[A-Za-z]{3,50}",
         description="Name must be all character at least with length of 5",
     )
     profession: Optional[str] = Field(
-        pattern=r"[A-Za-z]{5,50}",
+        pattern=r"[A-Za-z]{3,50}",
         description="profession must be all character at least with length of 5",
     )
     daily_amount: Optional[float] = 0

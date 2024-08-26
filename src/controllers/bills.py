@@ -14,7 +14,9 @@ bills_services = BillsServices()
 
 
 @bills_router.get("/", response_model=BillsResponse)
-async def get_bills(current_user: Login = Depends(get_current_user)) -> JSONResponse:
+async def get_bills(
+    current_user: Login = Depends(get_current_user),
+) -> JSONResponse:
     content = bills_services.get_bills()
     return JSONResponse(
         status_code=status.HTTP_200_OK,

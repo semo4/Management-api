@@ -21,8 +21,8 @@ class IncomesServices:
             )
         for row in result:
             data = build_incomes_dict(row)
-            incomes_list.append(data)
-        content = jsonable_encoder(IncomesResponse(**dict(i)) for i in incomes_list)
+            incomes_list.append(IncomesResponse(**dict(data)))
+        content = jsonable_encoder(incomes_list)
         return content
 
     def get_income(self, income_id: UUID) -> jsonable_encoder:

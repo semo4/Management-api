@@ -21,8 +21,8 @@ class WithdrawServices:
             )
         for row in result:
             data = build_withdraw_dict(row)
-            withdraw_list.append(data)
-        content = jsonable_encoder(WithdrawResponse(**dict(i)) for i in withdraw_list)
+            withdraw_list.append(WithdrawResponse(**dict(data)))
+        content = jsonable_encoder(withdraw_list)
         return content
 
     def get_withdraw(self, withdraw_id: UUID) -> jsonable_encoder:
