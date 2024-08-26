@@ -2,7 +2,6 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 
 from src.queries.outcomes_categories import OutcomesCategoriesQueries
 from src.types.outcomes_categories import (
@@ -27,13 +26,11 @@ class OutcomesCategoriesServices:
             )
         for row in result:
             data = build_response_dict(row)
-            categories_list.append(data)
-        content = jsonable_encoder(
-            OutcomesCategoriesResponse(**dict(i)) for i in categories_list
-        )
+            categories_list.append(OutcomesCategoriesResponse(**dict(data)))
+        content = jsonable_encoder(categories_list)
         return content
 
-    def get_category(categories_id: UUID) -> jsonable_encoder:
+    def get_category(self, categories_id: UUID) -> jsonable_encoder:
         row = categories_queries.get_category(categories_id=categories_id)
         if not row:
             raise HTTPException(
@@ -55,10 +52,7 @@ class OutcomesCategoriesServices:
             )
         data = build_response_dict(row)
         content = jsonable_encoder(OutcomesCategoriesResponse(**dict(data)))
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content=content,
-        )
+        return content
 
     def insert_categories(
         self, categories_req: OutcomesCategoriesRequest

@@ -32,10 +32,8 @@ class CovenantsCashServices:
             )
         for row in result:
             data = build_covenants_cash_dict(row)
-            covenants_cash_list.append(data)
-        content = jsonable_encoder(
-            CovenantsCashResponse(**dict(i)) for i in covenants_cash_list
-        )
+            covenants_cash_list.append(CovenantsCashResponse(**dict(data)))
+        content = jsonable_encoder(covenants_cash_list)
         return content
 
     def get_covenant_cash(self, covenant_cash_id: UUID) -> jsonable_encoder:

@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 class BillsResponse(BaseModel):
     id: UUID
-    project_id: Optional[UUID | None]
+    project_id: Optional[UUID | None] = None
     project_name: Optional[str | None] = ""
     store_name: str
     buyer_name: str

@@ -21,8 +21,8 @@ class SalariesServices:
             )
         for row in result:
             data = build_salaries_dict(row)
-            salaries_list.append(data)
-        content = jsonable_encoder(SalariesResponse(**dict(i)) for i in salaries_list)
+            salaries_list.append(SalariesResponse(**dict(data)))
+        content = jsonable_encoder(salaries_list)
         return content
 
     def get_salary(self, salaries_id: UUID) -> jsonable_encoder:

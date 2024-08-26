@@ -27,10 +27,8 @@ class WithdrawContractorsServices:
             )
         for row in result:
             data = build_withdraw_contractors_dict(row)
-            withdraw_contractors_list.append(data)
-        content = jsonable_encoder(
-            WithdrawContractorsResponse(**dict(i)) for i in withdraw_contractors_list
-        )
+            withdraw_contractors_list.append(WithdrawContractorsResponse(**dict(data)))
+        content = jsonable_encoder(withdraw_contractors_list)
         return content
 
     def get_operation(self, withdraw_contractors_id: UUID) -> jsonable_encoder:

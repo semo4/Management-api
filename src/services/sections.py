@@ -21,8 +21,8 @@ class SectionsServices:
             )
         for row in result:
             data = build_section_dict(row)
-            sections_list.append(data)
-        content = jsonable_encoder(SectionsResponse(**dict(i)) for i in sections_list)
+            sections_list.append(SectionsResponse(**dict(data)))
+        content = jsonable_encoder(sections_list)
         return content
 
     def get_section(self, section_id: UUID) -> jsonable_encoder:

@@ -22,10 +22,8 @@ class OperationsServices:
             )
         for row in result:
             data = build_operations_dict(row)
-            operations_list.append(data)
-        content = jsonable_encoder(
-            OperationsResponse(**dict(i)) for i in operations_list
-        )
+            operations_list.append(OperationsResponse(**dict(data)))
+        content = jsonable_encoder(operations_list)
         return content
 
     def get_operation(self, operations_id: UUID) -> jsonable_encoder:

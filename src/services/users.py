@@ -27,8 +27,8 @@ class UserServices:
             )
         for row in result:
             data = build_users_dict(row)
-            users_list.append(data)
-        content = jsonable_encoder(UsersResponse(**dict(i)) for i in users_list)
+            users_list.append(UsersResponse(**dict(data)))
+        content = jsonable_encoder(users_list)
         return content
 
     def get_user(self, user_id: UUID) -> jsonable_encoder:

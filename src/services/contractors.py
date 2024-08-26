@@ -1,7 +1,9 @@
+from typing import List
 from uuid import UUID
 
 from fastapi import HTTPException, status
 from fastapi.encoders import jsonable_encoder
+from pydantic import ValidationError
 
 from src.queries.contractors import ContractorsQueries
 from src.types.contractors import ContractorsRequest, ContractorsResponse
@@ -11,126 +13,215 @@ contractors_queries = ContractorsQueries()
 
 
 class ContractorsServices:
-    def get_contractors(self) -> jsonable_encoder:
-        contractors_list = list()
+    def get_contractors(self) -> List[dict]:
         result = contractors_queries.get_contractors()
+
         if not result:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="No contractors Details Found",
+                status_code=status.HTTP_404_NOT_FOUND, detail="No contractors found"
             )
-        for row in result:
-            data = build_contractors_dict(row)
-            contractors_list.append(data)
-        content = jsonable_encoder(
-            ContractorsResponse(**dict(i)) for i in contractors_list
-        )
-        return content
 
-    def get_contractor(self, contractor_id: UUID) -> jsonable_encoder:
+        try:
+            contractors_list = [
+                ContractorsResponse(**build_contractors_dict(row)) for row in result
+            ]
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error processing contractor data",
+            ) from e
+
+        return jsonable_encoder(contractors_list)
+
+    def get_contractor(self, contractor_id: UUID) -> dict:
         row = contractors_queries.get_contractor(contractor_id=contractor_id)
+
         if not row:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No contractors Details Found with this ID: {contractor_id}",
+                status_code=status.HTTP_404_NOT_FOUND, detail="Contractor not found"
             )
-        data = build_contractors_dict(row)
-        content = jsonable_encoder(ContractorsResponse(**dict(data, exclude_none=True)))
-        return content
 
-    def get_contractor_by_name(self, contractor_name: str) -> jsonable_encoder:
+        try:
+            contractor_data = build_contractors_dict(row)
+            contractor = ContractorsResponse(**contractor_data)
+            return jsonable_encoder(contractor.dict(exclude_none=True))
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error processing contractor data",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An unexpected error occurred",
+            ) from e
+
+    def get_contractor_by_name(self, contractor_name: str) -> dict:
         row = contractors_queries.get_contractor_by_name(
             contractor_name=contractor_name
         )
+
         if not row:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No contractors Details Found with this Name: {contractor_name}",
+                status_code=status.HTTP_404_NOT_FOUND, detail="Contractor not found"
             )
-        data = build_contractors_dict(row)
-        content = jsonable_encoder(ContractorsResponse(**dict(data)))
-        return content
 
-    def insert_contractor(
-        self, contractors_req: ContractorsRequest
-    ) -> jsonable_encoder:
-        row = contractors_queries.insert_contractor(contractors_req=contractors_req)
-        if not row:
+        try:
+            contractor_data = build_contractors_dict(row)
+            contractor = ContractorsResponse(**contractor_data)
+            return jsonable_encoder(contractor)
+        except ValidationError as e:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="contractors Details Inserted failed",
-            )
-        data = build_contractors_dict_post(row)
-        content = jsonable_encoder(ContractorsResponse(**dict(data)))
-        return content
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Error processing contractor data",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An unexpected error occurred",
+            ) from e
 
-    def delete_contractor(self, contractor_id: UUID) -> jsonable_encoder:
-        pre_row = contractors_queries.get_contractor_by_id(contractor_id=contractor_id)
-        if not pre_row:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No contractors Details Found with this ID: {contractor_id}",
-            )
-        else:
-            row = contractors_queries.delete_contractor(contractor_id=contractor_id)
-            if not row:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"contractors Deleted Failed with this ID: {contractor_id}",
-                )
-            data = build_contractors_dict_post(row)
-            content = jsonable_encoder(ContractorsResponse(**dict(data)))
-            return content
+    def insert_contractor(self, contractors_req: ContractorsRequest) -> dict:
+        try:
+            row = contractors_queries.insert_contractor(contractors_req=contractors_req)
 
-    def update_contractor(
-        self, contractor_id: UUID, contractors_req: ContractorsRequest
-    ) -> jsonable_encoder:
-        row = contractors_queries.get_contractor_by_id(contractor_id=contractor_id)
-        if not row:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No contractors Details Found with this ID: {contractor_id}",
-            )
-        else:
-            row = contractors_queries.delete_contractor(contractor_id=contractor_id)
-            if not row:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail=f"contractors Deleted Failed with this ID: {contractor_id}",
-                )
-            else:
-                row = contractors_queries.insert_contractor(
-                    contractors_req=contractors_req
-                )
-                if not row:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="contractors Details Updated failed",
-                    )
-                data = build_contractors_dict_post(row)
-                content = jsonable_encoder(ContractorsResponse(**dict(data)))
-                return content
-
-    def update(
-        self,
-        contractor_id: UUID,
-        contractors_req: ContractorsRequest,
-    ) -> jsonable_encoder:
-        row = contractors_queries.get_contractor_by_id(contractor_id=contractor_id)
-        if not row:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"No contractors Details Found with this ID: {contractor_id}",
-            )
-        else:
-            row = contractors_queries.update_contractor(
-                contractor_id=contractor_id, contractors_req=contractors_req
-            )
             if not row:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="contractors Details Updated failed",
+                    detail="Failed to insert contractor details",
                 )
-            data = build_contractors_dict_post(row)
-            content = jsonable_encoder(ContractorsResponse(**dict(data)))
-            return content
+
+            contractor_data = build_contractors_dict_post(row)
+            contractor = ContractorsResponse(**contractor_data)
+
+            return jsonable_encoder(contractor)
+
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Invalid contractor data format",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while processing the request",
+            ) from e
+
+    def delete_contractor(self, contractor_id: UUID) -> dict:
+        try:
+            # Check if the contractor exists
+            if not contractors_queries.get_contractor_by_id(
+                contractor_id=contractor_id
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Contractor not found"
+                )
+
+            # Attempt to delete the contractor
+            deleted_row = contractors_queries.delete_contractor(
+                contractor_id=contractor_id
+            )
+
+            if not deleted_row:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to delete contractor",
+                )
+
+            contractor_data = build_contractors_dict_post(deleted_row)
+            contractor = ContractorsResponse(**contractor_data)
+
+            return jsonable_encoder(contractor)
+
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Error processing contractor data",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while processing the request",
+            ) from e
+
+    def update_contractor(
+        self, contractor_id: UUID, contractors_req: ContractorsRequest
+    ) -> dict:
+        try:
+            # Check if the contractor exists
+            if not contractors_queries.get_contractor_by_id(
+                contractor_id=contractor_id
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Contractor not found"
+                )
+
+            # Delete the existing contractor
+            if not contractors_queries.delete_contractor(contractor_id=contractor_id):
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to update contractor: deletion error",
+                )
+
+            # Insert the updated contractor
+            updated_row = contractors_queries.insert_contractor(
+                contractors_req=contractors_req
+            )
+            if not updated_row:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to update contractor: insertion error",
+                )
+
+            contractor_data = build_contractors_dict_post(updated_row)
+            contractor = ContractorsResponse(**contractor_data)
+
+            return jsonable_encoder(contractor)
+
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Error processing contractor data",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while processing the request",
+            ) from e
+
+    def update(self, contractor_id: UUID, contractors_req: ContractorsRequest) -> dict:
+        try:
+            # Check if the contractor exists
+            if not contractors_queries.get_contractor_by_id(
+                contractor_id=contractor_id
+            ):
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Contractor not found"
+                )
+
+            # Update the contractor
+            updated_row = contractors_queries.update_contractor(
+                contractor_id=contractor_id, contractors_req=contractors_req
+            )
+
+            if not updated_row:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Failed to update contractor",
+                )
+
+            contractor_data = build_contractors_dict_post(updated_row)
+            contractor = ContractorsResponse(**contractor_data)
+
+            return jsonable_encoder(contractor)
+
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Error processing contractor data",
+            ) from e
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="An error occurred while processing the request",
+            ) from e

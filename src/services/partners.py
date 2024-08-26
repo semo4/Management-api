@@ -21,8 +21,8 @@ class PartnersServices:
             )
         for row in result:
             data = build_partners_dict(row)
-            partners_list.append(data)
-        content = jsonable_encoder(PartnersResponse(**dict(i)) for i in partners_list)
+            partners_list.append(PartnersResponse(**dict(data)))
+        content = jsonable_encoder(partners_list)
         return content
 
     def get_partner(self, partner_id: UUID) -> jsonable_encoder:

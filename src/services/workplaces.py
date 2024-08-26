@@ -21,10 +21,8 @@ class WorkPlaceServices:
             )
         for row in result:
             data = build_response_dict(row)
-            workplace_list.append(data)
-        content = jsonable_encoder(
-            WorkPlacesResponse(**dict(i)) for i in workplace_list
-        )
+            workplace_list.append(WorkPlacesResponse(**dict(data)))
+        content = jsonable_encoder(workplace_list)
         return content
 
     def get_workplace(self, workplace_id: UUID) -> jsonable_encoder:

@@ -20,8 +20,8 @@ class WorkersServices:
             )
         for row in result:
             data = build_workers_dict(row)
-            workers_list.append(data)
-        content = jsonable_encoder(WorkersResponse(**dict(i)) for i in workers_list)
+            workers_list.append(WorkersResponse(**dict(data)))
+        content = jsonable_encoder(workers_list)
         return content
 
     def get_worker(self, worker_id: UUID) -> jsonable_encoder:

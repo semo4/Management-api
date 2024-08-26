@@ -9,6 +9,8 @@ def build_section_dict(row):
     data = dict()
     data["id"] = row[0]
     data["name"] = row[1]
+    data["created_at"] = row[2]
+    data["updated_at"] = row[3]
     return data
 
 
@@ -62,6 +64,8 @@ def build_projects_post_dict(row):
     data["start_date"] = row[5]
     data["end_date"] = row[6]
     data["project_evaluation"] = row[7]
+    data["project_revenue"] = 0
+    data["project_depth"] = 0
     return data
 
 
@@ -90,6 +94,8 @@ def build_response_dict(row):
     data = dict()
     data["id"] = row[0]
     data["title"] = row[1]
+    data["created_at"] = row[2]
+    data["updated_at"] = row[3]
     return data
 
 
