@@ -40,8 +40,7 @@ class BillsServices:
             )
 
         try:
-            bill_data = build_bills_dict(row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_dict(row))
         except ValidationError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -59,8 +58,7 @@ class BillsServices:
             )
 
         try:
-            bill_data = build_bills_dict(row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_dict(row))
         except ValidationError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -79,8 +77,7 @@ class BillsServices:
             )
 
         try:
-            bill_data = build_bills_dict(row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_dict(row))
         except ValidationError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -98,8 +95,7 @@ class BillsServices:
             )
 
         try:
-            bill_data = build_bills_dict(row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_dict(row))
         except ValidationError as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -118,8 +114,7 @@ class BillsServices:
                     detail="Failed to insert bill details",
                 )
 
-            bill_data = build_bills_post_dict(row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_post_dict(row))
 
             return jsonable_encoder(bill)
 
@@ -151,8 +146,7 @@ class BillsServices:
                     detail="Failed to delete bill",
                 )
 
-            bill_data = build_bills_post_dict(deleted_row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_post_dict(deleted_row))
 
             return jsonable_encoder(bill)
 
@@ -190,8 +184,7 @@ class BillsServices:
                     detail="Failed to update bill: insertion error",
                 )
 
-            bill_data = build_bills_post_dict(updated_row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_post_dict(updated_row))
 
             return jsonable_encoder(bill)
 
@@ -222,8 +215,7 @@ class BillsServices:
                     detail="Failed to update bill",
                 )
 
-            bill_data = build_bills_post_dict(updated_row)
-            bill = BillsResponse(**bill_data)
+            bill = BillsResponse(**build_bills_post_dict(updated_row))
 
             return jsonable_encoder(bill)
 

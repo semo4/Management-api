@@ -13,6 +13,11 @@ DB_USER = os.getenv("DB_USER")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 
+SENDER = os.getenv("SENDER")
+SENDER_PASSWORD = os.getenv("SENDER_PASSWORD")
+API_HOST = os.getenv("API_HOST")
+
+
 def get_database_url():
     """It will Generate Database URL for PostgreSQL To connect with
 

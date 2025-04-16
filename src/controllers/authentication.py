@@ -18,6 +18,15 @@ async def login(
     return token_result
 
 
+@auth_router.post("/verify_account/{id}")
+async def verify_account(id):
+    token_result = auth_services.verify_account_service(id)
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content=token_result,
+    )
+
+
 @auth_router.post("/register", response_model=UsersResponse)
 async def register(
     request: Request,
