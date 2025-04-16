@@ -73,6 +73,7 @@ def build_exception_response(exc):
         status.HTTP_403_FORBIDDEN: "Invalid CSRF token",
         status.HTTP_406_NOT_ACCEPTABLE: "Violates Constraint",
     }
+
     status_code = exc.status_code
     message = ERROR_MESSAGES.get(status_code, exc.detail)
 
