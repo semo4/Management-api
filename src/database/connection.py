@@ -11,7 +11,7 @@ def execute_all(query_statement):
 
 def execute_one(query_statement):
     with engine.begin() as conn:
-        result = conn.execute(query_statement).first()
+        result = conn.execute(query_statement).fetchone()
         if not result:
             return False
         return result
