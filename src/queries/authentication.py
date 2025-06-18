@@ -20,6 +20,21 @@ class AuthQueries:
         row = execute_one(result)
         return row
 
+    def get_user_data_by_id(self, id: str) -> Row | Literal[False]:
+        result = users.select().where(users.c.id == id)
+        row = execute_one(result)
+        return row
+
+    def activate_user_account(self, user_req: str) -> Row | Literal[False]:
+        result = (
+            users.update()
+            .where(users.c.id == user_req.id)
+            .values(dict(user_req.dict(exclude_unset=True)))
+            .returning(ALL_COLUMNS)
+        )
+        row = execute_one(result)
+        return row
+
     def register(self, user_req: UsersRequest) -> Row | Literal[False]:
         user_req.password = Hash.hashing_pass(user_req.password)
         user_req.is_admin = False

@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi_csrf_protect import CsrfProtect
@@ -59,3 +60,22 @@ def setup_middleware(app: FastAPI):
         max_age=3600,
         same_site="lax",
     )
+
+
+def build_exception_response(exc):
+    ERROR_MESSAGES = {
+        status.HTTP_422_UNPROCESSABLE_ENTITY: "Not Exist",
+        status.HTTP_404_NOT_FOUND: "Not Found",
+        status.HTTP_401_UNAUTHORIZED: "User UNAUTHORIZED",
+        status.HTTP_409_CONFLICT: "Can't Proceed Your Request",
+        status.HTTP_500_INTERNAL_SERVER_ERROR: "Internal Server Error",
+        status.HTTP_502_BAD_GATEWAY: "Bad Gateway Try Again Later",
+        status.HTTP_403_FORBIDDEN: "Invalid CSRF token",
+        status.HTTP_406_NOT_ACCEPTABLE: "Violates Constraint",
+    }
+
+    status_code = exc.status_code
+    message = ERROR_MESSAGES.get(status_code, exc.detail)
+
+    content = {"message": message, "detail": str(exc)}
+    JSONResponse(status_code=status_code, content=jsonable_encoder(content))
